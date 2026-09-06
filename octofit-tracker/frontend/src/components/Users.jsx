@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
-import { fetchItems } from '../api.js';
+import { apiBaseUrl, fetchItems } from '../api.js';
 import { EmptyState, ErrorState, LoadingState } from './ResourceState.jsx';
+
+const usersEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/users/`
+  : `${apiBaseUrl}/api/users/`;
 
 function Users() {
   const [users, setUsers] = useState([]);
   const [status, setStatus] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchItems('users').then(setUsers).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
+    fetchItems(usersEndpoint).then(setUsers).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
   }, []);
 
   if (status.loading) return <LoadingState />;

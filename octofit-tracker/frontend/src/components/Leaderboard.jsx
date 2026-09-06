@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
-import { fetchItems } from '../api.js';
+import { apiBaseUrl, fetchItems } from '../api.js';
 import { EmptyState, ErrorState, LoadingState } from './ResourceState.jsx';
+
+const leaderboardEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/leaderboard/`
+  : `${apiBaseUrl}/api/leaderboard/`;
 
 function Leaderboard() {
   const [entries, setEntries] = useState([]);
   const [status, setStatus] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchItems('leaderboard').then(setEntries).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
+    fetchItems(leaderboardEndpoint).then(setEntries).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
   }, []);
 
   if (status.loading) return <LoadingState />;

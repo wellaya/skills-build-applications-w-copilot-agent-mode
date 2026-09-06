@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
-import { fetchItems } from '../api.js';
+import { apiBaseUrl, fetchItems } from '../api.js';
 import { EmptyState, ErrorState, LoadingState } from './ResourceState.jsx';
+
+const teamsEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/teams/`
+  : `${apiBaseUrl}/api/teams/`;
 
 function Teams() {
   const [teams, setTeams] = useState([]);
   const [status, setStatus] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchItems('teams').then(setTeams).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
+    fetchItems(teamsEndpoint).then(setTeams).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
   }, []);
 
   if (status.loading) return <LoadingState />;

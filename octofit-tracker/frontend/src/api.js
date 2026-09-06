@@ -11,8 +11,11 @@ export function getItems(payload) {
   return [];
 }
 
-export async function fetchItems(resource) {
-  const response = await fetch(`${apiBaseUrl}/api/${resource}/`);
-  if (!response.ok) throw new Error(`Unable to load ${resource} (${response.status})`);
+export async function fetchItems(resourceOrEndpoint) {
+  const endpoint = resourceOrEndpoint.startsWith('http')
+    ? resourceOrEndpoint
+    : `${apiBaseUrl}/api/${resourceOrEndpoint}/`;
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error(`Unable to load ${resourceOrEndpoint} (${response.status})`);
   return getItems(await response.json());
 }

@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
-import { fetchItems } from '../api.js';
+import { apiBaseUrl, fetchItems } from '../api.js';
 import { EmptyState, ErrorState, LoadingState } from './ResourceState.jsx';
+
+const workoutsEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts/`
+  : `${apiBaseUrl}/api/workouts/`;
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([]);
   const [status, setStatus] = useState({ loading: true, error: '' });
 
   useEffect(() => {
-    fetchItems('workouts').then(setWorkouts).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
+    fetchItems(workoutsEndpoint).then(setWorkouts).catch((error) => setStatus({ loading: false, error: error.message })).finally(() => setStatus((current) => ({ ...current, loading: false })));
   }, []);
 
   if (status.loading) return <LoadingState />;
